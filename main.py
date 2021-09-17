@@ -6,7 +6,7 @@ import time
 import re
 
 
-def filter_text(text, url=True, num=True, currency=True):
+def filter_text(text, url=True, num=True, currency=True, month=True):
     text = text.split(' ')
     new_text = []
 
@@ -19,6 +19,9 @@ def filter_text(text, url=True, num=True, currency=True):
 
         elif currency and (word in ['$', '£', '€', '¥', '¢', '₩', 'Fr', 'Kr', '₿', '฿']):
             new_text.append('__CURRENCY__')
+
+        elif month and (word in ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']):
+            new_text.append('__MONTH__')
 
         else:
             new_text.append(word)
@@ -107,7 +110,7 @@ if __name__ == '__main__':
     target_dir = stdin.read().split('\n')[0]
     save_evolution(target_dir, transformations=[
         str.lower,
-        lambda text: filter_text(text, url=False, num=False, currency=False)
+        lambda text: filter_text(text, url=False, num=False, currency=False, month=False)
     ])
 
 
