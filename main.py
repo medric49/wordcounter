@@ -5,7 +5,6 @@ import os
 import time
 
 
-
 def get_vocabular(target_dir, sort=True, ):
     files = os.listdir(target_dir)
     files = sorted(files)
@@ -16,7 +15,6 @@ def get_vocabular(target_dir, sort=True, ):
     file_evol = [0]
     time_evol = [0]
     voc_evol = [0]
-
 
     for i, file in enumerate(files):
         print(file)
@@ -30,7 +28,6 @@ def get_vocabular(target_dir, sort=True, ):
                 voc[word] = 1 if word not in voc else voc[word] + 1
 
         tac = time.time() - tic
-
 
         file_evol.append(i+1)
         time_evol.append(tac)
