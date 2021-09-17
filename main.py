@@ -3,9 +3,30 @@
 from sys import stdin
 import os
 import time
+import re
 
 
-def get_vocabular(target_dir, sort=True, ):
+def filter_text(text, url=True, num=True, currency=True):
+    text = text.split(' ')
+    new_text = []
+
+    for word in text:
+        if url and (word.startswith('www.') or word.endswith(('.com', '.fr', '.ca', '.org'))):
+            new_text.append('__URL__')
+
+        elif num and (re.fullmatch('^\d*\.?\d*$', word.replace(',', '')) is not None):
+            new_text.append('__NUM__')
+
+        elif currency and (word in ['$', '£', '€', '¥', '¢', '₩', 'Fr', 'Kr', '₿', '฿']):
+            new_text.append('__CURRENCY__')
+
+        else:
+            new_text.append(word)
+
+    return new_text
+
+
+def get_vocabular(target_dir, sort=True, transformations=[]):
     files = os.listdir(target_dir)
     files = sorted(files)
     voc = {}
@@ -16,6 +37,8 @@ def get_vocabular(target_dir, sort=True, ):
     time_evol = [0]
     voc_evol = [0]
 
+    nb_word = 0
+
     for i, file in enumerate(files):
         print(file)
         file_path = os.path.join(target_dir, file)
@@ -23,9 +46,16 @@ def get_vocabular(target_dir, sort=True, ):
         with open(file_path) as f:
             text = f.read()
             text = text.replace('\n', ' ')
-            words = text.split(' ')
-            for word in words:
+
+            for transformation in transformations:
+                text = transformation(text)
+
+            if not isinstance(text, list):
+                text = text.split(' ')
+
+            for word in text:
                 voc[word] = 1 if word not in voc else voc[word] + 1
+                nb_word += 1
 
         tac = time.time() - tic
 
@@ -36,6 +66,10 @@ def get_vocabular(target_dir, sort=True, ):
     voc = voc.items()
     if sort:
         voc = sorted(voc, key=lambda x: x[1], reverse=True)
+
+    print(f'Max time: {round(time_evol[-1], 2)}s ({round(time_evol[-1] / 60, 2)}min)')
+    print(f'Max voc size: {voc_evol[-1]}')
+    print(f'Number of words: { nb_word } ')
 
     return voc, (file_evol, time_evol, voc_evol)
 
@@ -59,8 +93,8 @@ def freq_1bshort(target_dir):
     file.close()
 
 
-def save_evolution(target_dir):
-    voc, evolution = get_vocabular(target_dir, sort=False)
+def save_evolution(target_dir, transformations):
+    voc, evolution = get_vocabular(target_dir, sort=False, transformations=transformations)
 
     file_evol, time_evol, voc_evol = evolution
 
@@ -71,6 +105,9 @@ def save_evolution(target_dir):
 
 if __name__ == '__main__':
     target_dir = stdin.read().split('\n')[0]
-    save_evolution(target_dir)
+    save_evolution(target_dir, transformations=[
+        str.lower,
+        lambda text: filter_text(text, url=False, num=False, currency=False)
+    ])
 
 

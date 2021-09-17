@@ -17,23 +17,27 @@ def show_evolution(evolution_file):
         time_evol.append(float(time))
         voc_evol.append(int(voc_size))
 
+    print(f'Max time: {round(time_evol[-1], 2)}s ({round(time_evol[-1]/60, 2)}min)')
+    print(f'Max voc size: {voc_evol[-1]}')
+
     figure, axis = plt.subplots(1, 2, figsize=(14, 5))
 
     axis[0].plot(file_evol, time_evol, color='blue')
-    axis[0].set_xlim((0, 10))
+    axis[0].set_xlim(0)
     axis[0].set_ylim(0)
     axis[0].set_xlabel('Nb. tranches')
-    axis[0].set_ylabel('Temps exécution')
+    axis[0].set_ylabel('Temps exécution (s)')
 
     axis[1].plot(file_evol, voc_evol, color='green')
-    axis[1].set_xlim((0, 10))
+    axis[1].set_xlim(0)
     axis[1].set_ylim(0)
     axis[1].set_xlabel('Nb. tranches')
     axis[1].set_ylabel('Taille voc.')
 
     plt.savefig('evolution.png')
+    plt.show()
 
 
 if __name__ == '__main__':
-    show_evolution('evolution.txt')
+    show_evolution('evolution_default.txt')
 
