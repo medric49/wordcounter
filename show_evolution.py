@@ -34,7 +34,6 @@ def show_evolution(evolution_file):
     axis[1].set_xlabel('Nb. tranches')
     axis[1].set_ylabel('Taille voc.')
 
-    plt.savefig('evolution.png')
     plt.show()
 
 
