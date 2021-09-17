@@ -106,11 +106,31 @@ def save_evolution(target_dir, transformations):
             file.write(f'{i} {time_evol[i]} {voc_evol[i]}\n')
 
 
+def freq_top_less(target_dir):
+    voc, evolution = get_vocabular(target_dir, sort=True, transformations=[
+        str.lower,
+        lambda text: filter_text(text, url=True, num=True, currency=False, month=False)
+    ])
+
+    file = open('freq-top1000', 'w')
+    for word, _ in voc[:1000]:
+        file.write(f'{word} ')
+    file.close()
+
+    file = open('freq-less1000', 'w')
+    for word, _ in voc[-1000:]:
+        file.write(f'{word} ')
+    file.close()
+
+    file_evol, time_evol, voc_evol = evolution
+
+    with open('evolution.txt', 'w') as file:
+        for i in file_evol:
+            file.write(f'{i} {time_evol[i]} {voc_evol[i]}\n')
+
+
 if __name__ == '__main__':
     target_dir = stdin.read().split('\n')[0]
-    save_evolution(target_dir, transformations=[
-        str.lower,
-        lambda text: filter_text(text, url=False, num=False, currency=False, month=False)
-    ])
+    freq_top_less(target_dir)
 
 
