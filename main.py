@@ -1,9 +1,9 @@
 # Author : Medric Sonwa
-import sys
+
 from sys import stdin
 import os
 import time
-from matplotlib import pyplot as plt
+
 
 
 def get_vocabular(target_dir, sort=True, ):
@@ -62,30 +62,18 @@ def freq_1bshort(target_dir):
     file.close()
 
 
-def show_evolution(target_dir):
+def save_evolution(target_dir):
     voc, evolution = get_vocabular(target_dir, sort=False)
 
     file_evol, time_evol, voc_evol = evolution
 
-    figure, axis = plt.subplots(1, 2, figsize=(14, 5))
-
-    axis[0].plot(file_evol, time_evol, color='blue')
-    axis[0].set_xlim((0, 10))
-    axis[0].set_ylim(0)
-    axis[0].set_xlabel('Nb. tranches')
-    axis[0].set_ylabel('Temps exécution')
-
-    axis[1].plot(file_evol, voc_evol, color='green')
-    axis[1].set_xlim((0, 10))
-    axis[1].set_ylim(0)
-    axis[1].set_xlabel('Nb. tranches')
-    axis[1].set_ylabel('Taille voc.')
-
-    plt.savefig('evolution.png')
+    with open('evolution.txt', 'w') as file:
+        for i in file_evol:
+            file.write(f'{i} {time_evol[i]} {voc_evol[i]}\n')
 
 
 if __name__ == '__main__':
     target_dir = stdin.read().split('\n')[0]
-    show_evolution(target_dir)
+    save_evolution(target_dir)
 
 
