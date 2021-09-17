@@ -25,12 +25,60 @@ def show_evolution(evolution_file):
     axis[0].plot(file_evol, time_evol, color='blue')
     axis[0].set_xlim(0)
     axis[0].set_ylim(0)
+    axis[0].set_xlabel('Nombre de tranches')
+    axis[0].set_ylabel('Temps exécution (s)')
+
+    axis[1].plot(file_evol, voc_evol, color='blue')
+    axis[1].set_xlim(0)
+    axis[1].set_ylim(0)
+    axis[1].set_xlabel('Nombre de tranches')
+    axis[1].set_ylabel('Nombre de types')
+
+    plt.show()
+
+
+def show_evolution_2(evolution_1, evolution_2):
+    with open(evolution_1, 'r') as file:
+        file = file.read().split('\n')
+
+    file_1 = []
+    time_1 = []
+    voc_1 = []
+    for l in file:
+        if l == '':
+            continue
+        file_i, time, voc_size = l.split()
+        file_1.append(int(file_i))
+        time_1.append(float(time))
+        voc_1.append(int(voc_size))
+
+    with open(evolution_2, 'r') as file:
+        file = file.read().split('\n')
+
+    time_2 = []
+    voc_2 = []
+    for l in file:
+        if l == '':
+            continue
+        _, time, voc_size = l.split()
+        time_2.append(float(time))
+        voc_2.append(int(voc_size))
+
+    figure, axis = plt.subplots(1, 2, figsize=(14, 5))
+
+    axis[0].plot(file_1, time_1, color='blue', label='Avant pré-traitement')
+    axis[0].plot(file_1, time_2, color='red', label='Après pré-traitement')
+    axis[0].set_xlim(0)
+    axis[0].set_ylim(0)
+    axis[0].legend()
     axis[0].set_xlabel('Nb. tranches')
     axis[0].set_ylabel('Temps exécution (s)')
 
-    axis[1].plot(file_evol, voc_evol, color='green')
+    axis[1].plot(file_1, voc_1, color='blue', label='Avant pré-traitement')
+    axis[1].plot(file_1, voc_2, color='red', label='Après pré-traitement')
     axis[1].set_xlim(0)
     axis[1].set_ylim(0)
+    axis[1].legend()
     axis[1].set_xlabel('Nb. tranches')
     axis[1].set_ylabel('Taille voc.')
 
@@ -38,5 +86,5 @@ def show_evolution(evolution_file):
 
 
 if __name__ == '__main__':
-    show_evolution('evolution_default.txt')
+    show_evolution_2('evolution_default.txt', 'evolution_final.txt')
 
