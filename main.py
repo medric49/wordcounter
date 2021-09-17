@@ -131,9 +131,5 @@ def freq_top_less(target_dir):
 
 if __name__ == '__main__':
     target_dir = stdin.read().split('\n')[0]
-    save_evolution(target_dir, transformations=[
-        lambda x: filter_text(x, url=False, num=False, currency=False, month=True)
-        ]
-    )
-
+    freq_top_less(target_dir)
 
